@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $user = 'root';
-$pass = '';
+$pass = '1234';
 $db_name = 'athapong';
 
 $conn = mysql_connect($host ,$user ,$pass) or die('Cannot connect server.');
