@@ -8,12 +8,14 @@ include 'connect.php';
 @$prov = $_POST['prov'];
 @$tel = $_POST['tel'];
 
-@$start = $_REQUEST['start'];
+@$pagenum = $_REQUEST['page'];
+$limit = '2'; // แสดงผลหน้าละกี่หัวข้อ
 
-if(!isset($start)){
+$start = ($pagenum-1)*$limit;
+if(!isset($pagenum)){
 	$start = 0;
 }
-$limit = '5'; // แสดงผลหน้าละกี่หัวข้อ
+
 
 if ($name) {
 	$q_string = "name = '".$name."'";
@@ -59,7 +61,7 @@ exit; */
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-<title>Search data</title>
+<title>Search1 data</title>
 <script type="text/javascript" src="jquery.min.js"></script>
 <script type="text/javascript" src="jquery.validate.js"></script>
 
@@ -168,3 +170,86 @@ for($i=1;$i<=$page;$i++){
  <a href="index.php">Home</a>
 </body>
 </html>
+<?php 
+$pagenumber = @$_GET['page'];
+echo displayPaging($total, $limit, $pagenumber, "?page=");
+
+function displayPaging( $total, $limit, $pagenumber, $baseurl ){
+	// how many page numbers to show in list at a time
+	$showpages = "10"; // 1,3,5,7,9...
+
+	// set up icons to be used
+	$icon_path = 'icons/';
+	$icon_param = 'align="middle" style="border:0px;" ';
+	$icon_first= '[First page]';
+	$icon_last= '[Lastpage]';
+	$icon_previous= '<< Previous';
+	$icon_next= 'Next >>';
+	///////////////////
+	///////////////////
+
+	// do calculations
+	$pages = ceil($total / $limit);
+	$offset = ($pagenumber * $limit) - $limit;
+	$end = $offset + $limit;
+
+	// prepare paging links
+	$html .= '<div id="pageLinks">';
+	// if first link is needed
+	if($pagenumber > 1) { $previous = $pagenumber -1;
+	$html .= '<a href="'.$baseurl.'1">'.$icon_first.'</a> ';
+	}
+	// if previous link is needed
+	if($pagenumber > 2) { $previous = $pagenumber -1;
+	$html .= '<a href="'.$baseurl.''.$previous.'">'.$icon_previous.'</a> ';
+	}
+	// print page numbers
+	if ($pages>=2) { $p=1;
+	$html .= "| Page: ";
+	$pages_before = $pagenumber - 1;
+	$pages_after = $pages - $pagenumber;
+	$show_before = floor($showpages / 2);
+	$show_after = floor($showpages / 2);
+	if ($pages_before < $show_before){
+		$dif = $show_before - $pages_before;
+		$show_after = $show_after + $dif;
+	}
+	if ($pages_after < $show_after){
+		$dif = $show_after - $pages_after;
+		$show_before = $show_before + $dif;
+	}
+	$minpage = $pagenumber - ($show_before+1);
+	$maxpage = $pagenumber + ($show_after+1);
+
+	if ($pagenumber > ($show_before+1) && $showpages > 0) {
+		$html .= " ... ";
+	}
+	while ($p <= $pages) {
+		if ($p > $minpage && $p < $maxpage) {
+			if ($pagenumber == $p) {
+				$html .= " <b>".$p."</b>";
+			} else {
+				$html .= ' <a href="'.$baseurl.$p.'">'.$p.'</a>';
+			}
+		}
+		$p++;
+	}
+	if ($maxpage-1 < $pages && $showpages > 0) {
+		$html .= " ... ";
+	}
+	}
+	// if next link is needed
+	if($end < $total) { $next = $pagenumber +1;
+	if ($next != ($p-1)) {
+		$html .= ' | <a href="'.$baseurl.$next.'">'.$icon_next.'</a>';
+	} else {$html .= ' | ';}
+	}
+	// if last link is needed
+	if($end < $total) { $last = $p -1;
+	$html .= ' <a href="'.$baseurl.$last.'">'.$icon_last.'</a>';
+	}
+	$html .= '</div>';
+	// return paging links
+	return $html;
+}
+?>

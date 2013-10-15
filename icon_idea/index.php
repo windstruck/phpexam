@@ -11,7 +11,7 @@ $result = mysql_query($sql);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-<title>insert data</title>
+<title>Top page</title>
 <script type="text/javascript" src="jquery.min.js"></script>
 <script type="text/javascript" src="jquery.validate.js"></script>
 
@@ -73,7 +73,7 @@ $(function(){
 </table>
 
 <hr>
-<a href="search.php">Search</a>
+<a href="search.php">Search</a> | <a href="search1.php">Search1</a>
 <hr>
 
 <a href="delete_all.php">Delete All Data</a>
